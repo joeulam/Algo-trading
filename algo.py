@@ -91,7 +91,7 @@ while(True):
                         order_data=market_order_data
                     )
     else:
-        print('\n'+"------------------ \n"+'Current SMA: \n'+
+        print('\n'+"------------------ \n"+'Current SMA of ETH: \n'+
             "shortSMA: "+str(Sma1Day) + " at "+str(datetime.datetime.now())+'\n'
             "longSMA: "+str(Sma30Day)+ " at "+str(datetime.datetime.now())+'\n'
             "Current Price is: $"+str(eth_price_usd)

@@ -108,7 +108,7 @@ while(True):
                             order_data=market_order_data
                         )
     else:
-        print('\n'+"------------------ \n"+'Current SMA: \n'+
+        print('\n'+"------------------ \n"+'Current SMA of TSLA: \n'+
             "shortSMA: "+str(shortSMALat) + " at "+str(datetime.datetime.now())+'\n'
             "longSMA: "+str(LongSMA)+ " at "+str(datetime.datetime.now())
         )
