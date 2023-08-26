@@ -14,17 +14,17 @@ import time
 import finnhub
 import datetime 
 import websocket
+import config
 
 # ALL API SETUP 
 # Alpaca
-api_key = 'PK1XBVTFYABBZA2IP8LR'
-secret_key = 'drrhgQOS7ffpAawfrMndih83O8FSHgfn1eOEjIUc'
-trading_client = TradingClient(api_key, secret_key, paper=True)
+
+trading_client = TradingClient(config.api_key, config.secret_key, paper=True)
 account = trading_client.get_account()
 
 # Fin hub
-api_key_fin = 'cjkfenpr01quh8qr835gcjkfenpr01quh8qr8360'
-finnhub_client = finnhub.Client(api_key=api_key_fin)
+
+finnhub_client = finnhub.Client(api_key=config.api_key_fin)
 
 # Variable setup
 
@@ -83,7 +83,7 @@ while(True):
     shortSMA = getShortSMA(2)
 
 
-    if((shortSMALat == LongSMA) and shortSMA <= LongSMA):
+    if((shortSMALat == LongSMA) and shortSMA <= shortSMALat):
         print("Buy at $" + str(shortSMALat))
         market_order_data = MarketOrderRequest(
                         symbol="TSLA",
@@ -96,7 +96,7 @@ while(True):
                         order_data=market_order_data
                     )
 
-    elif((shortSMALat == LongSMA) and shortSMA >= LongSMA and (getStockQuant('TSLA') >= 1)):
+    elif((shortSMALat == LongSMA) and shortSMA >= shortSMALat and (getStockQuant('TSLA') >= 1)):
         print("Sell at $" + str(LongSMA))
         market_order_data = MarketOrderRequest(
             symbol='TSLA',
