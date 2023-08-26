@@ -24,6 +24,15 @@ trading_client = TradingClient(config.api_key, config.secret_key, paper=True)
 account = trading_client.get_account()
 # preparing orders
 
+def get_rsi():
+
+    return values
+def get_current_price():
+    response = requests.get("https://api.coinbase.com/v2/exchange-rates?currency=ETH")
+    data = response.json()
+    eth_ticker = data["data"]["rates"]["USD"]
+    return float(eth_ticker)
+
 def get_Long():
     eth_ticker = yf.Ticker("ETH-USD")
     eth_ticker = eth_ticker.history(period='10d')
@@ -63,11 +72,7 @@ while(True):
     Sma1Day = get_Short()
     Sma30Day = get_Long()
     price = get_price()
-    url = "https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"
-    response = requests.get(url)
-    data = response.json()
-    eth_price_usd = data["USD"]
-    if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) or (eth_price_usd < 1600) ):
+    if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) or (get_current_price() < 1600)): 
         print("buy")
         market_order_data = MarketOrderRequest(
                     symbol="ETH/USD",
@@ -94,6 +99,13 @@ while(True):
         print('\n'+"------------------ \n"+'Current SMA of ETH: \n'+
             "shortSMA: "+str(Sma1Day) + " at "+str(datetime.datetime.now())+'\n'
             "longSMA: "+str(Sma30Day)+ " at "+str(datetime.datetime.now())+'\n'
-            "Current Price is: $"+str(eth_price_usd)
+            "Current Price is: $"+str(get_current_price())
         )
     time.sleep(5)
+
+
+'''
+- CREATE RSI AND MACD INDICATORS
+- SPEED OPTIMIZE THE CODE
+- MAKE A FUNCTION PAGE?
+'''

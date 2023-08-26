@@ -113,3 +113,6 @@ while(True):
             "longSMA: "+str(LongSMA)+ " at "+str(datetime.datetime.now())
         )
     time.sleep(10)
+
+
+
