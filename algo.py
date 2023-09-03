@@ -16,6 +16,8 @@ from alpaca.data.live import StockDataStream
 import yfinance as yf
 import pandas as pd
 import datetime 
+import logging
+import logging.handlers
 
 
 import config
@@ -68,40 +70,52 @@ def getStockQuant(symbol):
     stock_quant = trading_client.get_open_position(symbol)
     return stock_quant.qty
 
+smtp_handler = logging.handlers.SMTPHandler(mailhost=("joeulam345@gmail.com", 25),
+                                            fromaddr="joeulam345@gmail.com", 
+                                            toaddrs="joeulam345@gmail.com",
+                                            subject=u"AppName error!")
+logger = logging.getLogger()
+logger.addHandler(smtp_handler)
+
 while(True):
-    Sma1Day = get_Short()
-    Sma30Day = get_Long()
-    price = get_price()
-    if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) or (get_current_price() < 1600)): 
-        print("buy")
-        market_order_data = MarketOrderRequest(
-                    symbol="ETH/USD",
-                    qty=1,
-                    side=OrderSide.BUY,
-                    time_in_force=TimeInForce.GTC
-                    )
-        # Market order
-        market_order = trading_client.submit_order(
-                        order_data=market_order_data
-                    )
-    elif((Sma1Day == Sma30Day) and (Sma1Day > ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) and getStockQuant('ETH') >= 1):
-        print('sell')
-        market_order_data = MarketOrderRequest(
-                    symbol='ETH/USD',
-                    qty=1,
-                    side=OrderSide.SELL,
-                    time_in_force=TimeInForce.GTC
-                    )
-        market_order = trading_client.submit_order(
-                        order_data=market_order_data
-                    )
-    else:
-        print('\n'+"------------------ \n"+'Current SMA of ETH: \n'+
-            "shortSMA: "+str(Sma1Day) + " at "+str(datetime.datetime.now())+'\n'
-            "longSMA: "+str(Sma30Day)+ " at "+str(datetime.datetime.now())+'\n'
-            "Current Price is: $"+str(get_current_price())
-        )
-    time.sleep(5)
+    try:
+        (Sma1Day) = round(get_Short())
+        (Sma30Day) = round(get_Long())
+        price = get_price()
+        if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) or (get_current_price() < 1600)): 
+            print("buy")
+            market_order_data = MarketOrderRequest(
+                        symbol="ETH/USD",
+                        qty=1,
+                        side=OrderSide.BUY,
+                        time_in_force=TimeInForce.GTC
+                        )
+            # Market order
+            market_order = trading_client.submit_order(
+                            order_data=market_order_data
+                        )
+        elif((Sma1Day == Sma30Day) and (Sma1Day > ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) and getStockQuant('ETH') >= 1):
+            print('sell')
+            market_order_data = MarketOrderRequest(
+                        symbol='ETH/USD',
+                        qty=1,
+                        side=OrderSide.SELL,
+                        time_in_force=TimeInForce.GTC
+                        )
+            market_order = trading_client.submit_order(
+                            order_data=market_order_data
+                        )
+        else:
+            print('\n'+"------------------ \n"+'Current SMA of ETH: \n'+
+                "shortSMA: "+str(Sma1Day) + " at "+str(datetime.datetime.now())+'\n'
+                "longSMA: "+str(Sma30Day)+ " at "+str(datetime.datetime.now())+'\n'
+                "Current Price is: $"+str(get_current_price())
+            )
+        time.sleep(5)
+    except Exception as e:
+        logger.exception('Unhandled Exception')
+        print(e)
+        break
 
 
 '''
