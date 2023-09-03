@@ -37,7 +37,7 @@ def get_current_price():
 
 def get_Long():
     eth_ticker = yf.Ticker("ETH-USD")
-    eth_ticker = eth_ticker.history(period='10d')
+    eth_ticker = eth_ticker.history(period='30d')
     price = 0 
     eth_ticker = eth_ticker['Close']
     for i, x in enumerate (eth_ticker):
@@ -48,7 +48,7 @@ def get_Long():
 
 def get_Short():
     eth_ticker = yf.Ticker("ETH-USD")
-    eth_ticker = eth_ticker.history(period='5m')
+    eth_ticker = eth_ticker.history(period='10d')
     price = 0 
     eth_ticker = eth_ticker['Close']
     for i, x in enumerate (eth_ticker):
