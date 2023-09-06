@@ -4,8 +4,8 @@ import yfinance as yf
 
 class MyStrategy(bt.Strategy):
     params = (
-        ("short_period", 10),   # Short SMA period
-        ("long_period", 30),  # Long SMA period
+        ("short_period", 5),   # Short SMA period
+        ("long_period", 10),  # Long SMA period
         ("rsi_period", 14),   # RSI period
         ("rsi_overbought", 70),  # RSI overbought threshold
         ("rsi_oversold", 40),     # RSI oversold threshold
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # Add the data feed (replace 'symbol' and date range as needed)
     data = bt.feeds.PandasData(dataname=yf.download('ETH-USD',
-                                                    start=datetime.datetime(2022, 1, 1),
+                                                    start=datetime.datetime(2023, 8, 1),
                                                     end=datetime.datetime(2023, 9, 3),
                                                     progress=False))
     cerebro.adddata(data)
@@ -58,6 +58,7 @@ if __name__ == "__main__":
 
     # Set the initial cash balance
     cerebro.broker.set_cash(2000)
+
     
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
     initial_portfolio_value = cerebro.broker.getvalue()

@@ -115,7 +115,6 @@ while(True):
     except Exception as e:
         logger.exception('Unhandled Exception')
         print(e)
-        break
 
 
 '''
