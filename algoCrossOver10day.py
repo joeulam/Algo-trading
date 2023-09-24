@@ -31,7 +31,6 @@ def getStockQuant(symbol):
     stock_quant = trading_client.get_open_position(symbol)
     return stock_quant.qty
 
-
 def getShortSMA(index):
     time_now = datetime.datetime.now()
     pass_20_day = datetime.timedelta(days=20)
@@ -71,7 +70,17 @@ def getLongSMA():
     print("longSMA: "+str(longSMALat))
     return longSMALat
 
-     
+def get_Price():
+    response = requests.get("https://data.alpaca.markets/v2/stocks/'AMD'/trades")
+    data = response.json()
+    print(data)
+    amdP = data["trades"]["p"]
+    return amdP
+
+
+
+
+
 while(True):
   # SAVES API CALLS #
   shortSMALat = getShortSMA(1)
@@ -107,7 +116,9 @@ while(True):
   else:
       print('\n'+"------------------ \n"+'Current SMA: \n'+
           "shortSMA: "+str(shortSMALat) + " at "+str(datetime.datetime.now())+'\n'
-          "longSMA: "+str(LongSMA)+ " at "+str(datetime.datetime.now())
+          "longSMA: "+str(LongSMA)+ " at "+str(datetime.datetime.now())+'\n'
+          "Ticket: AMD" + '\n'
+          #"Current price: " +str(get_Price())
       )
   time.sleep(10)
 

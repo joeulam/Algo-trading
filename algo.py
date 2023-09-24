@@ -27,8 +27,33 @@ account = trading_client.get_account()
 # preparing orders
 
 def get_rsi():
+    eth_ticker = yf.Ticker("ETH-USD")
+    eth_ticker = eth_ticker.history(period='50d')
+    eth_ticker = eth_ticker['Close']
+    posGains = 0
+    negGain = 0
+    pos = 0
+    neg = 0
+    x = 0
+    while(x <= 14):
+        if(eth_ticker[x] > eth_ticker[x+1]):
+                posGains += eth_ticker[x]
+                pos += 1
+        elif(eth_ticker[x] < eth_ticker[x+1] ):
+                negGain += eth_ticker[x]
+                neg += 1
+        x += 1
 
-    return values
+
+    gain14 = posGains/14
+    neg14 = negGain/14
+
+    rs = gain14 / neg14
+    rsi = (100)/(1+rs)
+    print(rsi)
+    return rsi
+
+    
 def get_current_price():
     response = requests.get("https://api.coinbase.com/v2/exchange-rates?currency=ETH")
     data = response.json()
@@ -82,7 +107,7 @@ while(True):
         (Sma1Day) = round(get_Short())
         (Sma30Day) = round(get_Long())
         price = get_price()
-        if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) or (get_current_price() < 1600)): 
+        if((Sma1Day == Sma30Day) and (Sma1Day < ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) and (get_rsi() < 40)): 
             print("buy")
             market_order_data = MarketOrderRequest(
                         symbol="ETH/USD",
@@ -94,7 +119,7 @@ while(True):
             market_order = trading_client.submit_order(
                             order_data=market_order_data
                         )
-        elif((Sma1Day == Sma30Day) and (Sma1Day > ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) and getStockQuant('ETH') >= 1):
+        elif((Sma1Day == Sma30Day) and (Sma1Day > ((price - eth_ticker[len(eth_ticker)-1])/len(eth_ticker))) and getStockQuant('ETH') >= 1 and (get_rsi() > 60)):
             print('sell')
             market_order_data = MarketOrderRequest(
                         symbol='ETH/USD',
@@ -109,7 +134,8 @@ while(True):
             print('\n'+"------------------ \n"+'Current SMA of ETH: \n'+
                 "shortSMA: "+str(Sma1Day) + " at "+str(datetime.datetime.now())+'\n'
                 "longSMA: "+str(Sma30Day)+ " at "+str(datetime.datetime.now())+'\n'
-                "Current Price is: $"+str(get_current_price())
+                "Current Price is: $"+str(get_current_price())+'\n'
+                "Current RSI: "+str(get_rsi())
             )
         time.sleep(5)
     except Exception as e:
